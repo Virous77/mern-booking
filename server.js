@@ -5,11 +5,15 @@ import authRoutes from "./routes/auth.js";
 import hotelRoutes from "./routes/hotels.js";
 import usersRoutes from "./routes/users.js";
 import roomRoutes from "./routes/rooms.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/booking", authRoutes);
 app.use("/api/booking", hotelRoutes);
@@ -18,6 +22,18 @@ app.use("/api/booking", usersRoutes);
 
 app.get("/", (req, res) => {
   res.send("home");
+});
+
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong, Try again!";
+
+  return res.status(errorStatus).json({
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
+    success: false,
+  });
 });
 
 const PORT = process.env.PORT || 3000;
