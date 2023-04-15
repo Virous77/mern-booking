@@ -36,8 +36,13 @@ export const getSingleUser = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find();
-    res.status(200).json(users);
+    if (req.user && req.user.id) {
+      const user = await User.findById(req.user.id);
+      const { password, isAdmin, ...restAll } = user._doc;
+      res.status(200).json(restAll);
+    } else {
+      res.status(200).json({ status: false });
+    }
   } catch (error) {
     next(error);
   }

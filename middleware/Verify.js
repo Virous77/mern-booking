@@ -40,3 +40,19 @@ export const verifyAdmin = (req, res, next) => {
     }
   });
 };
+
+export const verifyStatus = (req, res, next) => {
+  const token = req.body.token;
+
+  if (!token) {
+    req.user = null;
+    next();
+    return;
+  }
+  jwt.verify(token, process.env.JWT_KEY, (err, user) => {
+    if (err)
+      return next(createError({ status: 403, message: "Token is not valid!" }));
+    req.user = user;
+    next();
+  });
+};

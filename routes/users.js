@@ -5,13 +5,13 @@ import {
   getUsers,
   getSingleUser,
 } from "../controllers/userController.js";
-import { verify, verifyAdmin, verifyUser } from "../middleware/Verify.js";
+import { verifyUser, verifyStatus } from "../middleware/Verify.js";
 
 const router = express.Router();
 
 router.put("/user/:id", verifyUser, updateUser);
 router.delete("/user/:id", verifyUser, deleteUser);
 router.get("/user/:id", verifyUser, getSingleUser);
-router.get("/user", verifyAdmin, getUsers);
+router.post("/user", verifyStatus, getUsers);
 
 export default router;

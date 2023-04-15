@@ -64,24 +64,16 @@ export const getSingleHotel = async (req, res, next) => {
 
 export const getHotels = async (req, res, next) => {
   const { min, max, limit, ...others } = req.query;
-  const hotels = await Hotel.find({
-    ...others,
-    $or: [
-      { cheapestPrice: { $gt: min || 1 } },
-      { cheapestPrice: { $lt: max || 1000 } },
-    ],
-  }).limit(limit);
 
-  // const { min, max, ...others } = req.query;
-  // try {
-  //   const hotels = await Hotel.find({
-  //     ...others,
-  //     cheapestPrice: { $gt: min || 1, $lt: max || 1000 },
-  //   }).limit(req.query.limit);
-  res.status(200).json(hotels);
-  // } catch (error) {
-  //   next(error);
-  // }
+  try {
+    const hotels = await Hotel.find({
+      ...others,
+      cheapestPrice: { $gt: +min || 1, $lt: +max || 1000 },
+    }).limit(limit);
+    res.status(200).json(hotels);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getByCity = async (req, res, next) => {
